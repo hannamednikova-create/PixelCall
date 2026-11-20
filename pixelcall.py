@@ -1,10 +1,21 @@
-#!/usr/bin/env python3
-"""PixelCall: запускает сайт локально.
-Запуск:  python pixelcall.py   (затем откройте http://localhost:8000)
-Другой порт:  python pixelcall.py 9000
-Нужен только Python 3, внешние библиотеки не требуются."""
-import sys
-from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
+"""PixelCall для Streamlit (Streamlit Cloud, Hugging Face и т.п.).
+Локально:  pip install streamlit  ->  streamlit run pixelcall.py
+На Streamlit Cloud: Main file path = pixelcall.py, рядом положите requirements.txt."""
+import streamlit as st
+import streamlit.components.v1 as components
+
+st.set_page_config(page_title="PixelCall", page_icon="🎁", layout="wide",
+                   initial_sidebar_state="collapsed")
+
+# Убираем отступы и служебные элементы Streamlit, чтобы сайт занял весь экран
+st.markdown(
+    """<style>
+    #MainMenu, header, footer {visibility: hidden; height: 0;}
+    .block-container {padding: 0 !important; max-width: 100% !important;}
+    iframe {border: 0; width: 100%;}
+    </style>""",
+    unsafe_allow_html=True,
+)
 
 PAGE = """<!DOCTYPE html><html lang="ru"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"><title>PixelCall</title><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Pixelify+Sans:wght@400;600&family=Press+Start+2P&display=swap">
 <style>
@@ -112,24 +123,4 @@ render();
 </script></body></html>
 """
 
-
-class Handler(BaseHTTPRequestHandler):
-    def do_GET(self):
-        body = PAGE.encode("utf-8")
-        self.send_response(200)
-        self.send_header("Content-Type", "text/html; charset=utf-8")
-        self.send_header("Content-Length", str(len(body)))
-        self.end_headers()
-        self.wfile.write(body)
-
-    def log_message(self, *a):
-        pass
-
-
-if __name__ == "__main__":
-    port = int(sys.argv[1]) if len(sys.argv) > 1 else 8000
-    print(f"PixelCall: http://localhost:{port}  (Ctrl+C для выхода)")
-    try:
-        ThreadingHTTPServer(("0.0.0.0", port), Handler).serve_forever()
-    except KeyboardInterrupt:
-        pass
+components.html(PAGE, height=1100, scrolling=True)
