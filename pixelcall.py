@@ -17,7 +17,7 @@ st.markdown(
     unsafe_allow_html=True,
 )
 
-PAGE = """<!DOCTYPE html><html lang="ru"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"><title>PixelCall</title><script src="https://cdn.jsdelivr.net/npm/peerjs@1.5.4/dist/peerjs.min.js"></script><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Pixelify+Sans:wght@400;600&family=Press+Start+2P&display=swap">
+PAGE = """<!DOCTYPE html><html lang="ru"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"><title>PixelCall</title><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Pixelify+Sans:wght@400;600&family=Press+Start+2P&display=swap">
 <style>
 :root{--h:270;--b:1;--ac:hsl(var(--h) 90% 65%);--bg:#050505;--tx:#f1eeff;--gl:rgba(255,255,255,.06);--bd:rgba(255,255,255,.18);color-scheme:dark;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
 *{box-sizing:border-box}html{scroll-padding-top:env(safe-area-inset-top,0px)}
@@ -73,7 +73,7 @@ d.setProperty('--light',has?'none':t=='rainbow'?rb:t=='color'?cl:'none');
 d.setProperty('--bg',L?'#f4f4f8':t=='black'?'#050505':'#0d0b1a');d.setProperty('--tx',L?'#111':'#f1eeff');d.setProperty('--ac',t=='black'?'#fff':L?'#111':'hsl(var(--h) 90% 65%)');
 d.setProperty('--gl',L?'rgba(0,0,0,.05)':'rgba(255,255,255,.06)');d.setProperty('--bd',L?'rgba(0,0,0,.25)':'rgba(255,255,255,.18)');d.setProperty('--hv',L?'rgba(0,0,0,.1)':'rgba(255,255,255,.14)');d.setProperty('--bar',L?'rgba(244,244,248,.7)':'rgba(0,0,0,.6)');d.colorScheme=L?'light':'dark'}
 function today(){return new Date()}
-function render(){applyTheme();initPeer();if(!U){$('#app').innerHTML=authView();return}const T=[['home','Главная'],['shop','Магазин'],['inv','Инвентарь'],['friends','Друзья'],['chats','Чаты'],['call','Звонок'],['pay','Пиксели'],['set','Настройки']];
+function render(){applyTheme();if(!U){$('#app').innerHTML=authView();return}const T=[['home','Главная'],['shop','Магазин'],['inv','Инвентарь'],['friends','Друзья'],['chats','Чаты'],['call','Звонок'],['pay','Пиксели'],['set','Настройки']];
 $('#app').innerHTML=`<div id="bar"><span class="logo">PixelCall</span>${T.map(t=>`<button class="nv ${tab==t[0]?'on':''}" onclick="go('${t[0]}')">${t[1]}</button>`).join('')}<span class="sp"></span><span class="px">${S.px} px</span><button id="adv" onclick="go('adv')" title="Адвент-календарь">🎁<span>Адвент-календарь</span></button></div><main>${view()}</main>`}
 function go(t){tab=t;render()}
 function authView(){return `<main style="max-width:420px"><h1 style="color:var(--ac)">PixelCall</h1><div class="card"><div class="tabs"><button class="${authMode=='in'?'on':''}" onclick="authMode='in';render()">Вход</button><button class="${authMode=='up'?'on':''}" onclick="authMode='up';render()">Регистрация</button></div>
@@ -97,16 +97,10 @@ function addF(){const v=$('#fid').value.trim();if(!/^\\d{10}$/.test(v)||v==S.id|
 let cf=null;function chats(){if(!S.friends.length)return '<div class="card">Добавьте друзей, чтобы писать</div>';cf=cf??S.friends[0].id;const m=S.chats[cf]||[];return `<div class="card"><div class="tabs">${S.friends.map(f=>`<button class="${f.id==cf?'on':''}" onclick="cf='${f.id}';render()">${f.id.slice(-4)}</button>`).join('')}</div>${m.map(x=>`<div class="msg ${x.me?'me':''}">${esc(x.t)}</div>`).join('')}<div class="row"><input id="mi" placeholder="Сообщение"><button onclick="send()">Отправить</button></div></div>`}
 function send(){const t=$('#mi').value.trim();if(!t)return;(S.chats[cf]=S.chats[cf]||[]).push({me:1,t});save();render()}
 const CP=[[500,200],[1000,380],[2000,700]],RT={'$':100,'€':108,'₽':1.1};
-const CARD='5168752112060358',DEMO_PAY=true;
-function fc(n){return n.replace(/(.{4})/g,'$1 ').trim()}
-function pay(){const o=S.orders||[],cur=o.find(x=>x.c==S.show);return `<div class="card"><h3>Купить пиксели</h3><div class="grid">${CP.map(([p,u])=>`<div class="card g"><div class="px">${p} px</div><div>${u} ₴</div><button onclick="order(${p},${u})">Купить</button></div>`).join('')}</div><small>Оплата переводом на карту. Пиксели зачисляются после проверки перевода.</small></div>
-${cur?`<div class="card"><h3>Заказ ${cur.c}</h3><p>Переведите <b>${cur.u} ₴</b> на карту:</p><div class="row"><b class="px" style="font-size:20px">${fc(CARD)}</b><button onclick="navigator.clipboard.writeText('${CARD}').then(()=>alert('Номер карты скопирован'),()=>alert('Скопируйте номер вручную'))">Копировать</button></div><p>В комментарии к переводу укажите код: <b>${cur.c}</b></p><div class="row"><button onclick="paid('${cur.c}')">Я оплатил(а)</button>${DEMO_PAY?`<button onclick="demoCredit('${cur.c}')">Тест: зачислить без оплаты</button>`:''}</div></div>`:''}
-${o.length?`<div class="card"><h3>Ваши заказы</h3>${o.map(x=>`<div class="msg">${x.c}: ${x.p} px за ${x.u} ₴ — ${x.s}</div>`).join('')}</div>`:''}
+function pay(){return `<div class="card"><h3>Донат</h3><div class="grid">${CP.map(([p,u])=>`<div class="card g"><div class="px">${p} px</div><div>${u} ₴</div><button onclick="topup(${p},'PayPal')">PayPal</button><br><br><button onclick="topup(${p},'банковскую карту')">💳 Картой</button></div>`).join('')}</div><small>Демо: настоящая оплата PayPal и картой подключается через платёжный сервис на сервере. Здесь начисление имитируется, а выдать себе пиксели просто так нельзя.</small></div>
 <div class="card"><h3>Конвертер</h3><div class="row"><input id="am" type="number" min="0" value="1" oninput="cv()"><select id="cu" onchange="cv()"><option>$</option><option>€</option><option>₽</option></select> → <b id="cr" class="px">100 px</b></div><small>100 px = $1</small></div>`}
-function order(p,u){const c='PX'+String(Math.random()).slice(2,8);(S.orders=S.orders||[]).unshift({c,p,u,s:'ждёт оплаты'});S.show=c;save();render()}
-function paid(c){const x=S.orders.find(o=>o.c==c);if(x)x.s='оплата заявлена, ждёт проверки';S.show=null;save();render()}
-function demoCredit(c){const x=S.orders.find(o=>o.c==c);if(x&&x.s!='зачислено (тест)'){S.px+=x.p;x.s='зачислено (тест)'}S.show=null;save();render()}
 function cv(){$('#cr').textContent=Math.floor(($('#am').value||0)*RT[$('#cu').value])+' px'}
+function topup(p,m){if(confirm(`Демо-оплата: ${p} px (${m})?`)){S.px+=p;save();render()}}
 function rename(){const n=$('#nn').value.trim(),a=store.get('pc_acc',{});if(n.length<3||n.length>20){alert('От 3 до 20 символов');return}if(n==U)return;if(a[n]){alert('Ник занят');return}a[n]=a[U];delete a[U];store.set('pc_acc',a);try{localStorage.removeItem('pc_u_'+U)}catch(e){}U=n;save();render()}
 function setV(){const s=S.set,cn=['santa','tree','ball','snow'];return `<div class="card"><h3>Имя</h3><div class="row"><input id="nn" value="${esc(U)}" maxlength="20"><button onclick="rename()">Сохранить имя</button></div><small>Новым ником нужно будет входить в аккаунт</small></div>
 <div class="card"><h3>Тема</h3><div class="row">${[['black','Чёрная'],['white','Белая'],['rainbow','Радужная'],['color','Цветная']].map(([k,n])=>`<button class="${(s.theme||'black')==k?'on':''}" onclick="S.set.theme='${k}';save();render()">${n}</button>`).join('')}</div>${S.bgimg?'<small>Со своим фоном подсветка отключена</small>':''}</div>
@@ -114,30 +108,17 @@ function setV(){const s=S.set,cn=['santa','tree','ball','snow'];return `<div cla
 <div class="card"><h3>Фон</h3><label>Своя картинка <input type="file" accept="image/*" onchange="img(this,'bg')"></label> <button onclick="S.bgimg='';save();render()">Убрать фон</button></div>
 <div class="card"><h3>День рождения</h3><input type="date" value="${S.bd||''}" onchange="S.bd=this.value;save()"> <label><input type="checkbox" ${s.bday?'checked':''} onchange="S.set.bday=this.checked;save()"> Показывать тортик</label></div>
 <div class="card"><h3>Подарки по углам камеры</h3>${s.corners.map((c,i)=>`<label>Угол ${i+1} <select onchange="S.set.corners[${i}]=this.value;save()">${['none','santa','tree','ball','window'].map(o=>`<option value="${o}" ${(o==c||(c=='snow'&&o=='ball'))?'selected':''}>${o=='none'?'Не ставить':G[o].n}</option>`).join('')}</select></label> `).join('')}<br><small>Ставятся только те подарки, которые у вас есть.</small></div>
-<button onclick="peer&&peer.destroy();peer=null;U=null;S=null;render()">Выйти</button>`}
+<button onclick="U=null;S=null;render()">Выйти</button>`}
 function adv(){const t=today(),inEv=t.getMonth()==11&&t.getDate()<=24,done=Object.keys(S.adv.cells).length,can=(demo||inEv)&&done<24&&Date.now()-S.adv.last>=864e5&&(demo||done<t.getDate());
 return `<div class="card"><h3>Адвент-календарь (1–24 декабря)</h3><label><input type="checkbox" ${demo?'checked':''} onchange="demo=this.checked;render()"> Пробная версия (без ограничений по датам)</label><br><br><div class="grid" style="grid-template-columns:repeat(auto-fill,minmax(90px,1fr))">${Array.from({length:24},(_,i)=>{const d=i+1,c=S.adv.cells[d];return c?`<div class="cell" style="background:hsl(var(--h) 50% 30%)">${c.t=='px'?c.v+' px':svg(c.v,'')}${c.got?'<small>✔</small>':`<button onclick="claim(${d})">Забрать</button>`}</div>`:`<button class="cell" onclick="openC(${d},${can&&d==done+1})" ${d==done+1&&can?'':'disabled'}>${d}</button>`}).join('')}</div><small>Ячейка раз в 24 часа. Награду можно забрать позже. Подарки из адвента нельзя продать, только обменять.</small></div>`}
 function roll(d){let w=R.map(r=>[r,r[0]=='g'||r[1]==1500?r[2]+(d==24?1:0):r[2]]),s=w.reduce((a,x)=>a+x[1],0),x=Math.random()*s;for(const [r,v] of w){x-=v;if(x<=0)return r}return R[0]}
 function openC(d,ok){if(!ok)return;const r=roll(d);S.adv.last=Date.now();S.adv.cells[d]=r[0]=='px'?{t:'px',v:r[1]}:{t:'g',v:r[1]};save();render()}
 function claim(d){const c=S.adv.cells[d];if(c.t=='px')S.px+=c.v;else{const n=take(c.v);if(n)S.inv.push({g:c.v,n,adv:true});else{S.px+=875;alert('Все 50 экземпляров разобраны: вместо подарка 875 px')}}c.got=1;save();render()}
-let peer=null,pcall=null,remote=null,cam0=null;
-function st(t){const e=$('#cs');if(e)e.textContent=t}
-function initPeer(){if(peer||!U||!S||!window.Peer)return;try{peer=new Peer('pixelcall-'+S.id);
-peer.on('call',c=>{if(confirm('Входящий звонок от PixelID '+c.peer.slice(10)+'. Ответить?')){getMedia().then(s=>{c.answer(s);hook(c);tab='call';render()}).catch(()=>{c.close();alert('Нет доступа к камере или микрофону')})}else c.close()});
-peer.on('disconnected',()=>{try{peer.reconnect()}catch(e){}});peer.on('error',e=>st(e.type=='unavailable-id'?'Этот аккаунт уже открыт в другой вкладке или на другом устройстве':e.type=='peer-unavailable'?'Пользователь не в сети (он должен открыть PixelCall)':'Ошибка связи: '+e.type))}catch(e){}}
-async function getMedia(){if(!stream){try{stream=await navigator.mediaDevices.getUserMedia({video:true,audio:true})}catch(e){stream=await navigator.mediaDevices.getUserMedia({audio:true})}}cam0=stream.getVideoTracks()[0]||null;attach();return stream}
-function hook(c){pcall=c;c.on('stream',r=>{remote=r;attach();st('Разговор идёт')});c.on('close',()=>{remote=null;pcall=null;attach();st('Звонок завершён')})}
-function attach(){const v=$('#v'),m=$('#me');if(v)v.srcObject=remote;if(m)m.srcObject=stream}
-async function dial(){const id=$('#to').value.trim();if(!/^[0-9]{10}$/.test(id)||id==S.id){alert('Введите PixelID собеседника (10 цифр)');return}
-if(!peer||!peer.open){alert('Связь ещё подключается, подождите пару секунд и повторите');return}try{const s=await getMedia();st('Звоним...');hook(peer.call('pixelcall-'+id,s))}catch(e){alert('Нет доступа к камере или микрофону')}}
-function hang(){pcall&&pcall.close();pcall=null;remote=null;attach();st('Звонок завершён')}
-function callV(){const cs=S.set.corners,pos=['left:6px;top:6px','right:6px;top:6px','left:6px;bottom:6px','right:6px;bottom:6px'];setTimeout(attach,0);
-return `<div class="card"><div class="row" style="margin-bottom:10px"><span>Ваш PixelID: <b>${S.id}</b></span><input id="to" placeholder="PixelID собеседника" maxlength="10"><button onclick="dial()">📞 Позвонить</button><button onclick="hang()">Завершить</button></div>
-<div class="call"><video id="v" autoplay playsinline></video><video id="me" autoplay muted playsinline style="position:absolute;right:8px;bottom:8px;width:24%;height:auto;border-radius:10px;border:2px solid var(--ac)"></video>${cs.map((c,i)=>{const k=c=='snow'?'ball':c;return k!='none'&&S.inv.some(x=>x.g==k)?`<div class="cn" style="${pos[i]}">${svg(k,'bob')}</div>`:''}).join('')}<div id="mt" class="muted" style="display:none">🎤 Микрофон выключен</div></div>
-<div class="row" style="margin-top:10px"><button onclick="getMedia().catch(()=>alert('Нет доступа к камере'))">📷 Камера</button><button onclick="mc()">🎤 Микрофон</button><button onclick="scr()">🖥 Демонстрация экрана</button></div><small id="cs">Дайте собеседнику свой PixelID. Он должен быть в приложении, чтобы принять звонок.</small></div>`}
-function mc(){mic=!mic;stream&&stream.getAudioTracks().forEach(t=>t.enabled=mic);$('#mt').style.display=mic?'none':'block'}
-async function scr(){try{const d=await navigator.mediaDevices.getDisplayMedia({video:true}),t=d.getVideoTracks()[0],snd=pcall&&pcall.peerConnection.getSenders().find(x=>x.track&&x.track.kind=='video');
-if(snd)await snd.replaceTrack(t);const m=$('#me');if(m)m.srcObject=d;t.onended=async()=>{if(snd&&cam0)await snd.replaceTrack(cam0);attach()}}catch(e){alert('Демонстрация недоступна')}}
+function callV(){const cs=S.set.corners,pos=['left:6px;top:6px','right:6px;top:6px','left:6px;bottom:6px','right:6px;bottom:6px'];
+return `<div class="card"><div class="call"><video id="v" autoplay muted playsinline></video>${cs.map((c,i)=>{const k=c=='snow'?'ball':c;return k!='none'&&S.inv.some(x=>x.g==k)?`<div class="cn" style="${pos[i]}">${svg(k,'bob')}</div>`:''}).join('')}<div id="mt" class="muted" style="display:none">🎤 Микрофон выключен</div></div><div class="row" style="margin-top:10px"><button onclick="cam()">📷 Камера</button><button onclick="mc()">🎤 Микрофон</button><button onclick="scr()">🖥 Демонстрация экрана</button></div><small>Видеосвязь с другими людьми требует сервера (WebRTC); здесь работают камера, микрофон и экран на вашем устройстве.</small></div>`}
+async function cam(){try{stream=await navigator.mediaDevices.getUserMedia({video:true,audio:true});$('#v').srcObject=stream;mic=true}catch(e){alert('Нет доступа к камере')}}
+function mc(){mic=!mic;stream?.getAudioTracks().forEach(t=>t.enabled=mic);$('#mt').style.display=mic?'none':'block'}
+async function scr(){try{$('#v').srcObject=await navigator.mediaDevices.getDisplayMedia({video:true})}catch(e){alert('Демонстрация недоступна')}}
 render();
 </script></body></html>
 """
