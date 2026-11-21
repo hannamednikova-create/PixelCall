@@ -100,7 +100,7 @@ const CP=[[500,200],[1000,380],[2000,700]],RT={'$':100,'€':108,'₽':1.1};
 const CARD='5168752112060358',DEMO_PAY=true;
 function fc(n){return n.replace(/(.{4})/g,'$1 ').trim()}
 function pay(){const o=S.orders||[],cur=o.find(x=>x.c==S.show);return `<div class="card"><h3>Купить пиксели</h3><div class="grid">${CP.map(([p,u])=>`<div class="card g"><div class="px">${p} px</div><div>${u} ₴</div><button onclick="order(${p},${u})">Купить</button></div>`).join('')}</div><small>Оплата переводом на карту. Пиксели зачисляются после проверки перевода.</small></div>
-${cur?`<div class="card"><h3>Заказ ${cur.c}</h3><p>Переведите <b>${cur.u} ₴</b> на карту:</p><div class="row"><b class="px" style="font-size:20px">${fc(CARD)}</b><button onclick="navigator.clipboard&&navigator.clipboard.writeText('${CARD}')">Копировать</button></div><p>В комментарии к переводу укажите код: <b>${cur.c}</b></p><div class="row"><button onclick="paid('${cur.c}')">Я оплатил(а)</button>${DEMO_PAY?`<button onclick="demoCredit('${cur.c}')">Тест: зачислить без оплаты</button>`:''}</div></div>`:''}
+${cur?`<div class="card"><h3>Заказ ${cur.c}</h3><p>Переведите <b>${cur.u} ₴</b> на карту:</p><div class="row"><b class="px" style="font-size:20px">${fc(CARD)}</b><button onclick="navigator.clipboard.writeText('${CARD}').then(()=>alert('Номер карты скопирован'),()=>alert('Скопируйте номер вручную'))">Копировать</button></div><p>В комментарии к переводу укажите код: <b>${cur.c}</b></p><div class="row"><button onclick="paid('${cur.c}')">Я оплатил(а)</button>${DEMO_PAY?`<button onclick="demoCredit('${cur.c}')">Тест: зачислить без оплаты</button>`:''}</div></div>`:''}
 ${o.length?`<div class="card"><h3>Ваши заказы</h3>${o.map(x=>`<div class="msg">${x.c}: ${x.p} px за ${x.u} ₴ — ${x.s}</div>`).join('')}</div>`:''}
 <div class="card"><h3>Конвертер</h3><div class="row"><input id="am" type="number" min="0" value="1" oninput="cv()"><select id="cu" onchange="cv()"><option>$</option><option>€</option><option>₽</option></select> → <b id="cr" class="px">100 px</b></div><small>100 px = $1</small></div>`}
 function order(p,u){const c='PX'+String(Math.random()).slice(2,8);(S.orders=S.orders||[]).unshift({c,p,u,s:'ждёт оплаты'});S.show=c;save();render()}
@@ -123,13 +123,13 @@ function claim(d){const c=S.adv.cells[d];if(c.t=='px')S.px+=c.v;else{const n=tak
 let peer=null,pcall=null,remote=null,cam0=null;
 function st(t){const e=$('#cs');if(e)e.textContent=t}
 function initPeer(){if(peer||!U||!S||!window.Peer)return;try{peer=new Peer('pixelcall-'+S.id);
-peer.on('call',c=>{if(confirm('Входящий звонок от PixelID '+c.peer.slice(10)+'. Ответить?')){getMedia().then(s=>{c.answer(s);hook(c)}).catch(()=>c.close())}else c.close()});
-peer.on('error',e=>st(e.type=='peer-unavailable'?'Пользователь не в сети (он должен открыть PixelCall)':'Ошибка связи: '+e.type))}catch(e){}}
-async function getMedia(){if(!stream)stream=await navigator.mediaDevices.getUserMedia({video:true,audio:true});cam0=stream.getVideoTracks()[0];attach();return stream}
+peer.on('call',c=>{if(confirm('Входящий звонок от PixelID '+c.peer.slice(10)+'. Ответить?')){getMedia().then(s=>{c.answer(s);hook(c);tab='call';render()}).catch(()=>{c.close();alert('Нет доступа к камере или микрофону')})}else c.close()});
+peer.on('disconnected',()=>{try{peer.reconnect()}catch(e){}});peer.on('error',e=>st(e.type=='unavailable-id'?'Этот аккаунт уже открыт в другой вкладке или на другом устройстве':e.type=='peer-unavailable'?'Пользователь не в сети (он должен открыть PixelCall)':'Ошибка связи: '+e.type))}catch(e){}}
+async function getMedia(){if(!stream){try{stream=await navigator.mediaDevices.getUserMedia({video:true,audio:true})}catch(e){stream=await navigator.mediaDevices.getUserMedia({audio:true})}}cam0=stream.getVideoTracks()[0]||null;attach();return stream}
 function hook(c){pcall=c;c.on('stream',r=>{remote=r;attach();st('Разговор идёт')});c.on('close',()=>{remote=null;pcall=null;attach();st('Звонок завершён')})}
 function attach(){const v=$('#v'),m=$('#me');if(v)v.srcObject=remote;if(m)m.srcObject=stream}
 async function dial(){const id=$('#to').value.trim();if(!/^[0-9]{10}$/.test(id)||id==S.id){alert('Введите PixelID собеседника (10 цифр)');return}
-if(!peer){alert('Связь не запущена');return}try{const s=await getMedia();st('Звоним...');hook(peer.call('pixelcall-'+id,s))}catch(e){alert('Нет доступа к камере или микрофону')}}
+if(!peer||!peer.open){alert('Связь ещё подключается, подождите пару секунд и повторите');return}try{const s=await getMedia();st('Звоним...');hook(peer.call('pixelcall-'+id,s))}catch(e){alert('Нет доступа к камере или микрофону')}}
 function hang(){pcall&&pcall.close();pcall=null;remote=null;attach();st('Звонок завершён')}
 function callV(){const cs=S.set.corners,pos=['left:6px;top:6px','right:6px;top:6px','left:6px;bottom:6px','right:6px;bottom:6px'];setTimeout(attach,0);
 return `<div class="card"><div class="row" style="margin-bottom:10px"><span>Ваш PixelID: <b>${S.id}</b></span><input id="to" placeholder="PixelID собеседника" maxlength="10"><button onclick="dial()">📞 Позвонить</button><button onclick="hang()">Завершить</button></div>
