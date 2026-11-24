@@ -12,7 +12,9 @@ st.markdown(
     """<style>
     #MainMenu, header, footer {visibility: hidden; height: 0;}
     .block-container {padding: 0 !important; max-width: 100% !important;}
-    iframe {border: 0; width: 100%; height: 100vh !important; height: 100dvh !important;}
+    iframe {border: 0; width: 100%; height: 100vh !important; height: 100dvh !important; display: block;}
+    html, body, .stApp, [data-testid="stAppViewContainer"], [data-testid="stMain"], section.main
+      {overflow: hidden !important; overscroll-behavior: none !important; background: #050505 !important;}
     </style>""",
     unsafe_allow_html=True,
 )
@@ -50,6 +52,7 @@ main{max-width:980px;margin:auto;padding:16px}
 .call .nm{position:absolute;left:62px;bottom:8px;z-index:3;background:rgba(0,0,0,.55);color:#fff;padding:2px 8px;border-radius:10px;font-size:13px;max-width:45%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .call .ic{position:absolute;left:50%;bottom:8px;transform:translateX(-50%);z-index:3;display:flex;gap:6px;background:rgba(0,0,0,.55);padding:4px 8px;border-radius:14px}.call .ic:empty{display:none}
 .tiles{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,360px),1fr));gap:10px}.wrapc{position:relative}
+.tiles.c1{grid-template-columns:minmax(0,1fr)}.tiles.c2{grid-template-columns:repeat(2,minmax(0,1fr))}.tiles.c3{grid-template-columns:repeat(3,minmax(0,1fr))}.tiles.c4{grid-template-columns:repeat(4,minmax(0,1fr))}
 .cc{position:absolute;top:0;left:50%;transform:translateX(-50%);z-index:8;text-align:center;padding:0 46px 16px;cursor:pointer;user-select:none}
 .cc .stick{width:46px;height:5px;border-radius:3px;background:rgba(255,255,255,.8);margin:8px auto 0;transition:width .3s;box-shadow:0 0 6px rgba(0,0,0,.6)}.cc:hover .stick,.cc.open .stick{width:70px}
 .cc .code{margin-top:7px;font-family:var(--f2);font-size:12px;color:#fff;background:rgba(0,0,0,.7);padding:9px 14px;border-radius:10px;white-space:nowrap;transform:translateY(-34px);opacity:0;pointer-events:none;transition:transform .8s cubic-bezier(.2,.8,.2,1),opacity .8s}
@@ -71,11 +74,18 @@ html.nf h3{font-size:17px}html.nf h1{font-size:28px}html.nf #bar .logo{font-size
 .tiles.pn{grid-template-columns:repeat(auto-fit,minmax(min(100%,180px),1fr))}.tiles.pn .call.pin{grid-column:1/-1;order:-1;aspect-ratio:auto;height:min(68vh,620px)}.call.pin{touch-action:none}.call.pin video{cursor:grab}
 .call.sp{animation:rg var(--gs,2.4s) linear infinite}
 @keyframes rg{0%,100%{border-color:#f33;box-shadow:0 0 16px 3px #f33}17%{border-color:#fa0;box-shadow:0 0 16px 3px #fa0}33%{border-color:#ee2;box-shadow:0 0 16px 3px #ee2}50%{border-color:#3d5;box-shadow:0 0 16px 3px #3d5}67%{border-color:#3af;box-shadow:0 0 16px 3px #3af}83%{border-color:#a5f;box-shadow:0 0 16px 3px #a5f}}
-#nf{position:fixed;top:calc(env(safe-area-inset-top,0px) + 8px);left:50%;transform:translateX(-50%);z-index:70;display:flex;gap:8px;flex-wrap:wrap;justify-content:center;width:96vw;pointer-events:none}
+#nf{position:fixed;top:calc(env(safe-area-inset-top,0px) + 8px);right:10px;z-index:70;display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end;max-width:96vw;pointer-events:none}
 .nfc{pointer-events:auto;width:150px;min-height:150px;display:flex;flex-direction:column;justify-content:space-between;gap:8px;padding:10px;border-radius:14px;background:var(--bg);color:var(--tx);border:1px solid var(--ac);box-shadow:0 6px 24px rgba(0,0,0,.45);animation:nin .25s;font-size:13px}
 .nft{overflow:hidden;word-break:break-word;flex:1;display:-webkit-box;-webkit-line-clamp:5;-webkit-box-orient:vertical}.nfb{display:grid;gap:6px}.nfb button{padding:6px 8px;font-size:13px}
 @keyframes nin{from{transform:translateY(-14px);opacity:0}}
 .mdb{position:fixed;inset:0;z-index:80;background:rgba(0,0,0,.6);display:grid;place-items:center;padding:14px}.mdb .card{background:var(--bg);max-width:420px;width:100%;margin:0}
+html,body{overscroll-behavior:none;background:var(--bg)}
+[data-pf]{cursor:pointer}
+button.ok{background:#1faa59;border-color:#1faa59;color:#fff}button.ok:hover{background:#27c46a}
+button.no{background:#d93636;border-color:#d93636;color:#fff}button.no:hover{background:#ee4a4a}
+.pfg{display:inline-block;text-align:center;margin-right:8px}.pfg svg{width:44px;height:44px}
+html.gc .call.sp{animation:gp calc(var(--gs,2.4s)/2) ease-in-out infinite}
+@keyframes gp{0%,100%{border-color:var(--gc);box-shadow:0 0 8px 1px var(--gc)}50%{border-color:var(--gc);box-shadow:0 0 22px 6px var(--gc)}}
 </style></head><body><div id="nf"></div><div id="md"></div><div id="app"></div>
 <script>
 const $=s=>document.querySelector(s);let S,U=null,tab='home',authMode='in',pend=null,demo=false,stream=null,mic=true;
@@ -99,7 +109,7 @@ function applyTheme(){const s=S?.set||{bri:1,hue:270};document.documentElement.s
 const rb='linear-gradient(180deg,hsl(var(--h) 90% 65%/.6) 0%,hsl(calc(var(--h) + 60) 90% 60%/.4) 25%,hsl(calc(var(--h) + 130) 90% 55%/.22) 50%,hsl(calc(var(--h) + 200) 90% 55%/.1) 70%,transparent 88%)',cl='linear-gradient(180deg,hsl(var(--h) 90% 60%/.5) 0%,transparent 70%)';
 d.setProperty('--light',has?'none':t=='rainbow'?rb:t=='color'?cl:'none');
 d.setProperty('--bg',L?'#f4f4f8':t=='black'?'#050505':'#0d0b1a');d.setProperty('--tx',L?'#111':'#f1eeff');d.setProperty('--ac',t=='black'?'#fff':L?'#111':'hsl(var(--h) 90% 65%)');
-d.setProperty('--gl',L?'rgba(0,0,0,.05)':'rgba(255,255,255,.06)');d.setProperty('--bd',L?'rgba(0,0,0,.25)':'rgba(255,255,255,.18)');d.setProperty('--hv',L?'rgba(0,0,0,.1)':'rgba(255,255,255,.14)');d.setProperty('--bar',L?'rgba(244,244,248,.7)':'rgba(0,0,0,.6)');d.colorScheme=L?'light':'dark';const nf=s.font=='normal';d.setProperty('--f1',nf?FN:FP1);d.setProperty('--f2',nf?FN:FP2);d.setProperty('--fw',nf?'700':'400');d.setProperty('--gs',(12/(s.gsp||5)).toFixed(2)+'s');document.documentElement.classList.toggle('nf',nf)}
+d.setProperty('--gl',L?'rgba(0,0,0,.05)':'rgba(255,255,255,.06)');d.setProperty('--bd',L?'rgba(0,0,0,.25)':'rgba(255,255,255,.18)');d.setProperty('--hv',L?'rgba(0,0,0,.1)':'rgba(255,255,255,.14)');d.setProperty('--bar',L?'rgba(244,244,248,.7)':'rgba(0,0,0,.6)');d.colorScheme=L?'light':'dark';const nf=s.font=='normal';d.setProperty('--f1',nf?FN:FP1);d.setProperty('--f2',nf?FN:FP2);d.setProperty('--fw',nf?'700':'400');d.setProperty('--gs',(12/(s.gsp||5)).toFixed(2)+'s');document.documentElement.classList.toggle('nf',nf);d.setProperty('--gc',s.gcol||'#ffffff');document.documentElement.classList.toggle('gc',!!s.gcol)}
 function today(){return new Date()}
 const T=[['home','Главная'],['shop','Магазин'],['inv','Инвентарь'],['friends','Друзья'],['chats','Чаты'],['call','Звонок'],['pay','Пиксели'],['set','Настройки']];
 function barHTML(){const bd={friends:S.reqIn.length,chats:Object.values(S.unread).reduce((a,b)=>a+b,0)};return `<span class="logo">PixelCall</span>${T.map(t=>`<button class="nv ${tab==t[0]?'on':''}" onclick="go('${t[0]}')">${t[1]}${bd[t[0]]?`<span class="badge">${bd[t[0]]}</span>`:''}</button>`).join('')}<span class="sp"></span><span title="${netOK?'Сеть подключена':esc(netErr||'Подключение к сети…')}" style="color:${netOK?'#3ddc84':'#e33'}">●</span><span class="px">${S.px} px</span><button id="adv" onclick="go('adv')" title="Адвент-календарь">🎁<span>Адвент-календарь</span></button>`}
@@ -116,7 +126,7 @@ const h=await sha(p),a=store.get('pc_acc',{});if(authMode=='up'){if(a[n]){e.text
 else{if(!a[n]||a[n].h!=h){e.textContent='Неверный ник или пароль';return}U=n;S=store.get('pc_u_'+n)}fix();afterLogin()}
 function view(){return({home,shop,inv,friends,chats,call:callV,pay,set:setV,adv})[tab]()}
 function bdToday(){if(!S.bd)return false;const d=new Date(S.bd),t=today();return d.getDate()==t.getDate()&&d.getMonth()==t.getMonth()}
-function home(){return `<div class="card row"><div class="av on">${S.set.bday&&bdToday()?'<i>🎂</i>':''}${avh(S.av)}</div><div><b>${esc(U)}</b><br><small>PixelID: <b class="cp" onclick="copyId()" title="Нажмите, чтобы скопировать">${S.id}</b></small> <button class="sm" onclick="copyId()">📋 Копировать</button><br><input value="${esc(S.bio)}" placeholder="Цитата о себе" onchange="S.bio=this.value;save()"></div><div class="row" style="max-width:340px">${[0,1,2,3,4,5,6,7,8,9].map(i=>`<button class="pk ${S.av=='p'+i?'on':''}" onclick="S.av='p${i}';save();render()">${pav(i)}</button>`).join('')}<label>Своя картинка <input type="file" accept="image/*" onchange="img(this,'av')"></label></div></div>
+function home(){return `<div class="card row"><div class="av on" data-pf="me">${S.set.bday&&bdToday()?'<i>🎂</i>':''}${avh(S.av)}</div><div><b>${esc(U)}</b><br><small>PixelID: <b class="cp" onclick="copyId()" title="Нажмите, чтобы скопировать">${S.id}</b></small> <button class="sm" onclick="copyId()">📋 Копировать</button><br><input value="${esc(S.bio)}" placeholder="Цитата о себе" onchange="S.bio=this.value;save();pushInfo()"></div><div class="row" style="max-width:340px">${[0,1,2,3,4,5,6,7,8,9].map(i=>`<button class="pk ${S.av=='p'+i?'on':''}" onclick="S.av='p${i}';save();render()">${pav(i)}</button>`).join('')}<label>Своя картинка <input type="file" accept="image/*" onchange="img(this,'av')"></label></div></div>
 <div class="card"><h3>Встречи</h3><div class="row"><button onclick="go('call');mkRoom()">Создать встречу</button><input id="rm" placeholder="Код или ссылка"><button onclick="joinFrom($('#rm').value)">Войти</button></div></div>`}
 function shop(){return `<div class="grid">${Object.entries(G).map(([k,g])=>`<div class="card g">${svg(k,'bob')}<div>${g.n}</div><div class="px">${g.p} px</div><small>${50-TK[k].length}/50 осталось</small><br><button onclick="buy('${k}')" ${TK[k].length>=50?'disabled':''}>Купить</button></div>`).join('')}</div>`}
 function buy(k){const g=G[k];if(S.px<g.p){alert('Недостаточно пикселей');go('pay');return}const n=take(k);if(!n)return;S.px-=g.p;S.inv.push({g:k,n,adv:false});save();render()}
@@ -126,18 +136,18 @@ function trade(i){if(!S.friends.length){alert('Сначала добавьте �
 const fname=f=>f.nick||('ID '+f.id),isOn=id=>!!(conns[id]&&conns[id].open);
 const rid=()=>Date.now()+'-'+Math.random().toString(36).slice(2,7);
 function avh2(a,im){if(a=='img'&&typeof im=='string'&&/^data:image\/(jpeg|png|webp);base64,[A-Za-z0-9+\/=]+$/.test(im))return `<img src="${im}" alt="">`;if(/^p\d$/.test(a||''))return pav(+a.slice(1));return esc(String(a||'🙂').slice(0,8))}
-function friendLists(){const card=(o,on,body)=>`<div class="card row"><div class="av ${on?'on':''}">${avh2(o.av,o.im)}</div><div><b>${esc(fname(o))}</b><br><small>${o.id}</small>${body[0]||''}</div><div class="row" style="margin-left:auto">${body[1]||''}</div></div>`;
-const inc=S.reqIn.map(r=>card(r,0,['<br><small>хочет добавить вас в друзья</small>',`<button onclick="acceptReq('${r.id}')">✔ Принять</button><button onclick="declineReq('${r.id}')">✖ Отклонить</button>`])).join('');
+function friendLists(){const card=(o,on,body,k)=>`<div class="card row"><div class="av ${on?'on':''}" data-pf="${k||'x'}:${o.id}">${avh2(o.av,o.im)}</div><div><b>${esc(fname(o))}</b><br><small>${o.id}</small>${body[0]||''}</div><div class="row" style="margin-left:auto">${body[1]||''}</div></div>`;
+const inc=S.reqIn.map(r=>card(r,0,['<br><small>хочет добавить вас в друзья</small>',`<button class="ok" onclick="acceptReq('${r.id}')">✔ Принять</button><button class="no" onclick="declineReq('${r.id}')">✖ Отклонить</button>`],'r')).join('');
 const out=S.reqOut.map(r=>card(r,0,['<br><small>запрос отправлен, ждём ответа</small>',`<button onclick="cancelReq('${r.id}')">Отменить</button>`])).join('');
-const fr=S.friends.map(f=>card(f,isOn(f.id),[`<br><small>${isOn(f.id)?'в сети':'не в сети'}</small>`,`<button onclick="openChat('${f.id}');go('chats')">💬 Написать</button>${isOn(f.id)?`<button onclick="callFriend('${f.id}')">📞 Позвонить</button>`:''}<button onclick="delF('${f.id}')">Удалить</button>`])).join('');
+const fr=S.friends.map(f=>card(f,isOn(f.id),[`<br><small>${isOn(f.id)?'в сети':'не в сети'}</small>`,`<button onclick="openChat('${f.id}');go('chats')">💬 Написать</button>${isOn(f.id)?`<button onclick="callFriend('${f.id}')">📞 Позвонить</button>`:''}<button onclick="delF('${f.id}')">Удалить</button>`],'f')).join('');
 return (inc?'<h3>Входящие запросы</h3>'+inc:'')+(out?'<h3>Исходящие запросы</h3>'+out:'')+'<h3>Друзья</h3>'+(fr||'<div class="card">Друзей пока нет</div>')}
 function friends(){return `<div class="card">Ваш PixelID: <b class="cp" onclick="copyId()" title="Нажмите, чтобы скопировать">${S.id}</b> <button class="sm" onclick="copyId()">📋 Копировать</button> <small>— отправьте его другу, чтобы он мог добавить вас</small><div class="row" style="margin-top:8px"><input id="fid" placeholder="PixelID друга (10 цифр)" maxlength="10"><button onclick="addF()">Добавить в друзья</button></div><small>Запросы и сообщения доходят, когда оба открыли PixelCall (иначе ждут, пока друг зайдёт).</small></div><div id="fl">${friendLists()}</div>`}
 function updF(){if(tab=='friends'){const e=$('#fl');if(e)e.innerHTML=friendLists()}}
-const prof=()=>({nick:U,av:S.av,im:S.av=='img'?S.avimg:null});
+const prof=()=>({nick:U,av:S.av,im:S.av=='img'?S.avimg:null,info:pinfo()});
 function addF(){const v=$('#fid').value.trim();if(!/^\d{10}$/.test(v)||v==S.id||S.friends.some(f=>f.id==v)||S.reqOut.some(r=>r.id==v)){alert('Неверный ID или запрос уже отправлен');return}
 if(S.reqIn.some(r=>r.id==v)){acceptReq(v);return}
 S.reqOut.push({id:v,nick:'',av:'🙂'});save();tx(v,Object.assign({t:'freq'},prof()));render()}
-function makeFriend(id,p){nfx('fr-'+id);S.reqIn=S.reqIn.filter(r=>r.id!=id);S.reqOut=S.reqOut.filter(r=>r.id!=id);if(!S.friends.some(f=>f.id==id))S.friends.push({id,nick:String(p.nick||'').slice(0,20),av:p.av||'🙂',im:p.im||null});save();updBar();updF();updChat()}
+function makeFriend(id,p){nfx('fr-'+id);S.reqIn=S.reqIn.filter(r=>r.id!=id);S.reqOut=S.reqOut.filter(r=>r.id!=id);if(!S.friends.some(f=>f.id==id))S.friends.push({id,nick:String(p.nick||'').slice(0,20),av:p.av||'🙂',im:p.im||null,info:p.info||null,seen:Date.now()});save();updBar();updF();updChat()}
 function acceptReq(id){const r=S.reqIn.find(x=>x.id==id);if(!r)return;makeFriend(id,r);tx(id,Object.assign({t:'facc'},prof()));toast('Теперь вы друзья с '+fname(r))}
 function declineReq(id){S.reqIn=S.reqIn.filter(r=>r.id!=id);save();tx(id,{t:'frej'});updBar();updF()}
 function cancelReq(id){S.reqOut=S.reqOut.filter(r=>r.id!=id);save();updF()}
@@ -146,8 +156,8 @@ function ftabs(){return S.friends.map(f=>`<button class="${f.id==cf?'on':''}" on
 function msgsHTML(){const m=S.chats[cf]||[];return m.length?m.map(x=>`<div class="msg ${x.me?'me':''}">${x.inv?`🎥 Приглашение в конференцию <b>${x.inv}</b> <button onclick="joinFrom('${x.inv}')">Войти</button>`:'<span class="nt">'+esc(x.t)+'</span>'}${x.me?` <small>${x.ok?'✓':'⏳'}</small>`:''}</div>`).join(''):'<small>Сообщений пока нет</small>'}
 function openChat(id){cf=id;S.unread[id]=0;save();if(tab=='chats')render()}
 function chats(){if(!S.friends.length)return '<div class="card">Добавьте друзей, чтобы писать</div>';if(!S.friends.some(f=>f.id==cf))cf=S.friends[0].id;S.unread[cf]=0;
-return `<div class="card"><div class="tabs" id="ftabs" style="flex-wrap:wrap">${ftabs()}</div><div id="msgs">${msgsHTML()}</div><div class="row"><input id="mi" placeholder="Сообщение" style="flex:1" onkeydown="if(event.key=='Enter')send()"><button onclick="send()">Отправить</button></div></div>`}
-function updChat(){if(tab!='chats')return;const m=$('#msgs'),t=$('#ftabs');if(t)t.innerHTML=ftabs();if(m){m.innerHTML=msgsHTML();m.scrollTop=m.scrollHeight}}
+return `<div class="card"><div class="tabs" id="ftabs" style="flex-wrap:wrap">${ftabs()}</div><div class="row" id="chh" style="margin:8px 0">${chHead()}</div><div id="msgs">${msgsHTML()}</div><div class="row"><input id="mi" placeholder="Сообщение" style="flex:1" onkeydown="if(event.key=='Enter')send()"><button onclick="send()">Отправить</button></div></div>`}
+function updChat(){if(tab!='chats')return;const m=$('#msgs'),t=$('#ftabs');if(t)t.innerHTML=ftabs();const h=$('#chh');if(h)h.innerHTML=chHead();if(m){m.innerHTML=msgsHTML();m.scrollTop=m.scrollHeight}}
 function send(){const i=$('#mi'),t=i.value.trim().slice(0,2000);if(!t)return;const m={me:1,t,ts:rid(),ok:0};(S.chats[cf]=S.chats[cf]||[]).push(m);save();i.value='';updChat();tx(cf,{t:'msg',text:t,ts:m.ts})}
 const CP=[[500,200],[1000,380],[2000,700]],RT={'$':100,'€':108,'₽':1.1};
 function pay(){return `<div class="card"><h3>Донат</h3><div class="grid">${CP.map(([p,u])=>`<div class="card g"><div class="px">${p} px</div><div>${u} ₴</div><button onclick="topup(${p},'PayPal')">PayPal</button><br><br><button onclick="topup(${p},'банковскую карту')">💳 Картой</button></div>`).join('')}</div><small>Демо: настоящая оплата PayPal и картой подключается через платёжный сервис на сервере. Здесь начисление имитируется, а выдать себе пиксели просто так нельзя.</small></div>
@@ -159,7 +169,7 @@ function setV(){const s=S.set,cn=['santa','tree','ball','snow'];return `<div cla
 <div class="card"><h3>Тема</h3><div class="row">${[['black','Чёрная'],['white','Белая'],['rainbow','Радужная'],['color','Цветная']].map(([k,n])=>`<button class="${(s.theme||'black')==k?'on':''}" onclick="S.set.theme='${k}';save();render()">${n}</button>`).join('')}</div>${S.bgimg?'<small>Со своим фоном подсветка отключена</small>':''}</div>
 <div class="card"><h3>Цвет и яркость</h3><label>Цвет <input type="range" min="0" max="360" value="${s.hue}" oninput="S.set.hue=this.value;applyTheme()" onchange="save()"></label> <label>Яркость <input type="range" min=".5" max="1.4" step=".05" value="${s.bri}" oninput="S.set.bri=this.value;applyTheme()" onchange="save()"></label></div>
 <div class="card"><h3>Фон</h3><label>Своя картинка <input type="file" accept="image/*" onchange="img(this,'bg')"></label> <button onclick="S.bgimg='';save();render()">Убрать фон</button></div>
-<div class="card"><h3>День рождения</h3><input type="date" value="${S.bd||''}" onchange="S.bd=this.value;save()"> <label><input type="checkbox" ${s.bday?'checked':''} onchange="S.set.bday=this.checked;save()"> Показывать тортик</label></div>
+<div class="card"><h3>День рождения</h3><input type="date" value="${S.bd||''}" onchange="S.bd=this.value;save();pushInfo()"> <label><input type="checkbox" ${s.bday?'checked':''} onchange="S.set.bday=this.checked;save()"> Показывать тортик</label></div>
 <div class="card"><h3>Подарки по углам камеры</h3>${s.corners.map((c,i)=>`<label>Угол ${i+1} <select onchange="S.set.corners[${i}]=this.value;save()">${['none','santa','tree','ball','window'].map(o=>`<option value="${o}" ${(o==c||(c=='snow'&&o=='ball'))?'selected':''}>${o=='none'?'Не ставить':G[o].n}</option>`).join('')}</select></label> `).join('')}<br><small>Ставятся только те подарки, которые у вас есть.</small></div>
 ${extraSet()}<button onclick="logout()">Выйти</button>`}
 function adv(){const t=today(),inEv=t.getMonth()==11&&t.getDate()<=24,done=Object.keys(S.adv.cells).length,can=(demo||inEv)&&done<24&&Date.now()-S.adv.last>=864e5&&(demo||done<t.getDate());
@@ -171,7 +181,7 @@ function claim(d){const c=S.adv.cells[d];if(c.t=='px')S.px+=c.v;else{const n=tak
 const NP='pixelcall27-',RP='pcr27-';
 let peer=null,conns={},connecting={},netOK=false,netErr='',cf=null,room=null,camOn=true,pendingRoom='__ROOM__';
 function toast(t){const d=document.createElement('div');d.className='toast';d.textContent=t;document.body.appendChild(d);setTimeout(()=>d.remove(),4000)}
-function fix(){S.friends=(S.friends||[]).map(f=>({id:f.id,nick:f.nick||'',av:f.av||f.ic||'🙂',im:f.im||null}));S.reqIn=S.reqIn||[];S.reqOut=S.reqOut||[];S.chats=S.chats||{};S.unread=S.unread||{}}
+function fix(){S.friends=(S.friends||[]).map(f=>({id:f.id,nick:f.nick||'',av:f.av||f.ic||'🙂',im:f.im||null,info:f.info||null,seen:f.seen||0}));S.reqIn=S.reqIn||[];S.reqOut=S.reqOut||[];S.chats=S.chats||{};S.unread=S.unread||{}}
 function afterLogin(){netStart();if(pendingRoom){const c=pendingRoom;pendingRoom='';tab='call';render();joinRoom(c,false)}else render()}
 function logout(){leave(true);try{peer&&peer.destroy()}catch(e){}peer=null;conns={};netOK=false;U=null;S=null;render()}
 function netStart(){if(peer||!U||!window.Peer)return;try{peer=new Peer(NP+S.id)}catch(e){return}
@@ -183,12 +193,12 @@ function link(id){const c=conns[id];if(c&&c.open)return c;if(!peer||!netOK||conn
 function tx(id,o){const c=conns[id];if(c&&c.open){try{c.send(o);return true}catch(e){}}link(id);return false}
 function setupConn(c){const id=String(c.peer||'').slice(NP.length);if(!/^\d{10}$/.test(id)){try{c.close()}catch(e){}return}
 c.on('open',()=>{delete connecting[id];conns[id]=c;c.send(Object.assign({t:'hi'},prof()));flush(id);updBar();updF();updChat()});
-c.on('data',d=>onData(id,d));c.on('close',()=>{if(conns[id]===c)delete conns[id];updF();updChat()});c.on('error',()=>{})}
+c.on('data',d=>onData(id,d));c.on('close',()=>{if(conns[id]===c){delete conns[id];const f=S&&S.friends.find(x=>x.id==id);if(f){f.seen=Date.now();save()}}updF();updChat()});c.on('error',()=>{})}
 function flush(id){if(S.reqOut.some(r=>r.id==id))tx(id,Object.assign({t:'freq'},prof()));(S.chats[id]||[]).filter(m=>m.me&&!m.ok).forEach(m=>tx(id,m.inv?{t:'inv',code:m.inv,ts:m.ts}:{t:'msg',text:m.t,ts:m.ts}))}
 function netTick(){if(!U||!S)return;if(peer&&peer.destroyed){peer=null;netOK=false}if(!peer)netStart();else if(peer.disconnected){try{peer.reconnect()}catch(e){}}
-if(netOK)[...S.friends,...S.reqOut].forEach(f=>link(f.id))}
+S.friends.forEach(f=>{if(isOn(f.id))f.seen=Date.now()});if(netOK)[...S.friends,...S.reqOut].forEach(f=>link(f.id))}
 setInterval(netTick,12000);
-function onData(id,d){if(!d||typeof d!='object')return;const fr=S.friends.find(f=>f.id==id),pf=()=>({nick:String(d.nick||'').slice(0,20),av:typeof d.av=='string'?d.av.slice(0,8):'🙂',im:typeof d.im=='string'&&d.im.length<400000?d.im:null});
+function onData(id,d){if(!d||typeof d!='object')return;const fr=S.friends.find(f=>f.id==id),pf=()=>({nick:String(d.nick||'').slice(0,20),av:typeof d.av=='string'?d.av.slice(0,8):'🙂',im:typeof d.im=='string'&&d.im.length<400000?d.im:null,info:sinfo(d.info)});
 switch(d.t){
 case'hi':if(fr){Object.assign(fr,pf());save();updF();updChat()}break;
 case'freq':if(fr){tx(id,Object.assign({t:'facc'},prof()));break}if(S.reqOut.some(r=>r.id==id)){makeFriend(id,pf());tx(id,Object.assign({t:'facc'},prof()));toast('Теперь вы друзья!');break}
@@ -196,7 +206,7 @@ if(!S.reqIn.some(r=>r.id==id)&&S.reqIn.length<50){S.reqIn.push(Object.assign({id
 case'facc':if(S.reqOut.some(r=>r.id==id)){makeFriend(id,pf());toast('✅ '+(d.nick||id)+' принял(а) ваш запрос')}break;
 case'frej':if(S.reqOut.some(r=>r.id==id)){S.reqOut=S.reqOut.filter(r=>r.id!=id);save();updF();toast('Запрос в друзья отклонён')}break;
 case'unf':if(fr){S.friends=S.friends.filter(f=>f.id!=id);save();updF();updChat()}break;
-case'call':{if(!fr)break;const c=parseCode(d.code);if(!c)break;ring();notify('📞 '+fname(fr)+' звонит вам',()=>{if(room)leave(true);joinFrom(c)},()=>tx(id,{t:'cdec'}),{tag:'call-'+c,ms:30000});break}
+case'call':{if(!fr)break;const c=parseCode(d.code);if(!c)break;notify('📞 '+fname(fr)+' звонит вам',()=>{if(room)leave(true);joinFrom(c)},()=>tx(id,{t:'cdec'}),{tag:'call-'+c,ms:30000,ring:1});break}
 case'ccan':{const c=parseCode(d.code);if(c)nfx('call-'+c);break}
 case'cdec':toast('📵 '+(fr?fname(fr):id)+' отклонил(а) звонок');break;
 case'toff':tradeMsg(id,fr,d);break;
@@ -239,7 +249,7 @@ function rwire(c){const R=room;c.on('open',()=>{if(room!==R)return;const p=R.par
 c.on('data',d=>rdat(c,d));c.on('close',()=>dropPart(c.peer));c.on('error',()=>{})}
 function rdat(c,d){if(!room||!d||typeof d!='object')return;const id=c.peer,p=room.parts[id]=room.parts[id]||{};
 if(d.t=='hi'||d.t=='st'){if(d.t=='hi'){p.nick=String(d.nick||'Гость').slice(0,20);p.av=typeof d.av=='string'?d.av.slice(0,8):'🙂';p.im=typeof d.im=='string'&&d.im.length<400000?d.im:null;p.cbg=okImg(d.cbg)}
-p.mic=d.mic!==false;p.cam=d.cam!==false;p.gifts=Array.isArray(d.gifts)?d.gifts.slice(0,4).map(k=>GK.includes(k)?k:null):[];
+if(d.info!==undefined)p.info=sinfo(d.info);p.mic=d.mic!==false;p.cam=d.cam!==false;p.gifts=Array.isArray(d.gifts)?d.gifts.slice(0,4).map(k=>GK.includes(k)?k:null):[];
 if(d.t=='hi'&&room.host)c.send({t:'list',ids:Object.keys(room.parts).filter(k=>k!=id&&room.parts[k].conn&&room.parts[k].conn.open)});drawTiles()}
 else if(d.t=='list'&&!room.listed){room.listed=1;(Array.isArray(d.ids)?d.ids:[]).slice(0,12).forEach(i=>{if(typeof i=='string'&&i.startsWith(RP+room.raw+'-')&&i!=room.pid){if(!(room.parts[i]&&room.parts[i].conn))rdata(i);callTo(i)}})}
 else if(d.t=='cbg'){p.cbg=okImg(d.cbg);drawTiles()}
@@ -248,7 +258,7 @@ function callWire(call){const R=room,id=call.peer,p=R.parts[id]=R.parts[id]||{};
 call.on('stream',st=>{if(room!==R)return;p.stream=st;let a=document.getElementById('a-'+id);if(!a){a=document.createElement('audio');a.id='a-'+id;a.className='ra';a.autoplay=true;document.body.appendChild(a)}a.srcObject=st;a.play().catch(()=>{});if(R.sharing)setSend(R.sharing.getVideoTracks()[0]);drawTiles()});
 call.on('close',()=>{if(room===R&&p.call===call&&!(p.conn&&p.conn.open))dropPart(id)});call.on('error',()=>{})}
 function dropPart(id){if(!room)return;const p=room.parts[id];if(!p)return;delete room.parts[id];try{p.conn&&p.conn.close()}catch(e){}try{p.call&&p.call.close()}catch(e){}const a=document.getElementById('a-'+id);a&&a.remove();if(p.nick)toast(p.nick+' вышел(а)');drawTiles()}
-function bc(){if(!room)return;const m={t:'st',mic,cam:camOn||!!room.sharing,gifts:myGifts()};Object.values(room.parts).forEach(p=>{try{p.conn&&p.conn.open&&p.conn.send(m)}catch(e){}})}
+function bc(){if(!room)return;const m={t:'st',mic,cam:camOn||!!room.sharing,gifts:myGifts(),info:pinfo()};Object.values(room.parts).forEach(p=>{try{p.conn&&p.conn.open&&p.conn.send(m)}catch(e){}})}
 function togMic(){if(!room)return;mic=!mic;room.stream.getAudioTracks().forEach(t=>t.enabled=mic);bc();drawTiles();syncBtns()}
 function togCam(){if(!room)return;if(room.stream.noCam){alert('Камера не найдена или нет доступа');return}camOn=!camOn;room.stream.getVideoTracks().forEach(t=>t.enabled=camOn);bc();drawTiles();syncBtns()}
 function setSend(tr){if(!tr||!room)return;Object.values(room.parts).forEach(p=>{const pc=p.call&&p.call.peerConnection;if(!pc)return;const s=pc.getSenders().find(x=>x.track&&x.track.kind=='video');if(s)s.replaceTrack(tr).catch(()=>{})})}
@@ -260,10 +270,10 @@ function syncBtns(){const f=(id,off)=>{const e=document.getElementById(id);if(e)
 const ZM={};let dg=null;
 const okImg=s=>typeof s=='string'&&s.length<400000&&/^data:image\/(jpeg|png|webp);base64,[A-Za-z0-9+\/=]+$/.test(s)?s:null;
 function tileHTML(id,o,local){const camv=local?(camOn||!!room.sharing):o.cam!==false,micv=local?mic:o.mic!==false,gl=local?myGifts():(o.gifts||[]),pos=['left:6px;top:6px','right:6px;top:6px','left:6px;bottom:6px','right:6px;bottom:6px'],pn=room.pin==id,z=ZM[id]||{z:1,x:0,y:0},cb=okImg(local?S.cbg:o.cbg);
-return `<div class="call ${micv?'':'mo'} ${pn?'pin':''}" id="t-${id}"><video autoplay playsinline muted${pn?` style="object-fit:contain;transform:translate(${z.x}px,${z.y}px) scale(${z.z})"`:''}></video><div class="avc" style="display:${camv?'none':'grid'}${cb?`;background-image:url(${cb})`:''}"><div class="av">${local?avh(S.av):avh2(o.av,o.im)}</div></div>${gl.map((k,i)=>k?`<div class="cn" style="${pos[i]}">${svg(k,'bob')}</div>`:'').join('')}<div class="tc">${pn?`<button title="Приблизить" onclick="zoom('${id}',.5)">＋</button><button title="Отдалить" onclick="zoom('${id}',-.5)">－</button><button title="Сбросить" onclick="zoom('${id}',0)">⟲</button>`:''}<button class="${pn?'on':''}" title="${pn?'Открепить':'Закрепить'}" onclick="pin('${id}')">📌</button></div><div class="bad" style="display:${(local?room.lbad:o.bad)?'block':'none'}">Плохое подключение к интернету</div><div class="nm">${esc(local?U+' (вы)':(o.nick||'Гость'))}</div><div class="ic">${micv?'':ICM}${camv?'':ICC}</div></div>`}
+return `<div class="call ${micv?'':'mo'} ${pn?'pin':''}" id="t-${id}"><video autoplay playsinline muted${pn?` style="object-fit:contain;transform:translate(${z.x}px,${z.y}px) scale(${z.z})"`:''}></video><div class="avc" style="display:${camv?'none':'grid'}${cb?`;background-image:url(${cb})`:''}"><div class="av" data-pf="${local?'me':'p:'+id}">${local?avh(S.av):avh2(o.av,o.im)}</div></div>${gl.map((k,i)=>k?`<div class="cn" style="${pos[i]}">${svg(k,'bob')}</div>`:'').join('')}<div class="tc">${pn?`<button title="Приблизить" onclick="zoom('${id}',.5)">＋</button><button title="Отдалить" onclick="zoom('${id}',-.5)">－</button><button title="Сбросить" onclick="zoom('${id}',0)">⟲</button>`:''}<button class="${pn?'on':''}" title="${pn?'Открепить':'Закрепить'}" onclick="pin('${id}')">📌</button></div><div class="bad" style="display:${(local?room.lbad:o.bad)?'block':'none'}">Плохое подключение к интернету</div><div class="nm" data-pf="${local?'me':'p:'+id}">${esc(local?U+' (вы)':(o.nick||'Гость'))}</div><div class="ic">${micv?'':ICM}${camv?'':ICC}</div></div>`}
 function drawTiles(){const t=$('#tiles');if(!t||!room||!room.stream)return;const ps=Object.entries(room.parts).filter(([k,p])=>/^[\w-]+$/.test(k)&&(p.nick||p.stream));
 if(room.pin&&room.pin!='me'&&!ps.some(([k])=>k==room.pin))room.pin=null;
-t.className='tiles'+(room.pin?' pn':'');t.innerHTML=tileHTML('me',{},true)+ps.map(([k,p])=>tileHTML(k,p,false)).join('');
+const n=1+ps.length;t.className='tiles c'+(n<2?1:n<5?2:n<10?3:4)+(room.pin?' pn':'');t.innerHTML=tileHTML('me',{},true)+ps.map(([k,p])=>tileHTML(k,p,false)).join('');
 const att=(id,st)=>{const v=document.querySelector('#t-'+id+' video');if(v&&st){v.srcObject=st;v.play().catch(()=>{})}};att('me',room.sharing||room.stream);ps.forEach(([k,p])=>att(k,p.stream))}
 function pin(id){if(!room)return;room.pin=room.pin==id?null:id;drawTiles()}
 function clampZ(id){const z=ZM[id],t=document.getElementById('t-'+id);if(!z||!t)return;const mx=t.clientWidth*(z.z-1)/2,my=t.clientHeight*(z.z-1)/2;z.x=Math.max(-mx,Math.min(mx,z.x));z.y=Math.max(-my,Math.min(my,z.y))}
@@ -333,7 +343,15 @@ const TR={
 'Обмен не удался, подарок возвращён':['The trade failed, your gift was returned','Обмін не вдався, подарунок повернено'],'Обмен отклонён':['Trade declined','Обмін відхилено'],'Предложение обмена отправлено':['Trade offer sent','Пропозицію обміну надіслано'],
 'Язык':['Language','Мова'],'Шрифт':['Font','Шрифт'],'Пиксельный':['Pixel','Піксельний'],'Обычный':['Normal','Звичайний'],'Свечение при разговоре':['Speaking glow','Світіння під час розмови'],'Включить':['Enable','Увімкнути'],'Скорость':['Speed','Швидкість'],'Радужная подсветка вокруг того, кто сейчас говорит.':['Rainbow glow around whoever is speaking.','Райдужна підсвітка навколо того, хто зараз говорить.'],
 'Фон при выключенной камере':['Background when camera is off','Фон при вимкненій камері'],'Картинка':['Image','Картинка'],'Убрать':['Remove','Прибрати'],'Его видят все в конференции, когда у вас выключена камера. Поставить фон можно только себе.':['Everyone in the conference sees it when your camera is off. You can only set it for yourself.','Його бачать усі в конференції, коли у вас вимкнена камера. Поставити фон можна лише собі.'],
-'Копировать':['Copy','Копіювати'],'PixelID скопирован':['PixelID copied','PixelID скопійовано']};
+'Копировать':['Copy','Копіювати'],'PixelID скопирован':['PixelID copied','PixelID скопійовано'],
+'Рингтон':['Ringtone','Рінгтон'],'🍄 Марио (чиптюн, в духе игры)':['🍄 Mario (chiptune, game-style)','🍄 Маріо (чіптюн, у дусі гри)'],'⛏ Майнкрафт: тихий день (пианино)':['⛏ Minecraft-style: quiet day (piano)','⛏ Майнкрафт: тихий день (піаніно)'],'⛏ Майнкрафт: пещера (эмбиент)':['⛏ Minecraft-style: cave (ambient)','⛏ Майнкрафт: печера (ембієнт)'],
+'▶ Прослушать':['▶ Preview','▶ Прослухати'],'■ Стоп':['■ Stop','■ Стоп'],'📁 Свой рингтон (mp3, wav, ogg)':['📁 Your ringtone (mp3, wav, ogg)','📁 Власний рінгтон (mp3, wav, ogg)'],'Свой файл':['Custom file','Власний файл'],
+'Мелодия играет, пока вам звонят. Свой файл — до 1,5 МБ.':['The melody plays while you are being called. Custom file — up to 1.5 MB.','Мелодія грає, поки вам дзвонять. Власний файл — до 1,5 МБ.'],'Файл слишком большой (макс. 1,5 МБ)':['File is too large (max 1.5 MB)','Файл завеликий (макс. 1,5 МБ)'],'Выберите аудиофайл':['Choose an audio file','Оберіть аудіофайл'],'Не удалось сохранить файл':['Could not save the file','Не вдалося зберегти файл'],
+'🌈 Радужный':['🌈 Rainbow','🌈 Райдужний'],'Свой цвет':['Custom color','Власний колір'],
+'Приватность профиля':['Profile privacy','Приватність профілю'],'Показывать другим:':['Show to others:','Показувати іншим:'],'Цитату':['Quote','Цитату'],'Подарки':['Gifts','Подарунки'],'Возраст':['Age','Вік'],'Когда был(а) в сети':['When I was last online','Коли був(ла) в мережі'],
+'Что отмечено — то видят другие, когда нажмут на вашу аватарку. Остальное будет скрыто 🔒.':['What is checked is visible to others when they tap your avatar. The rest stays hidden 🔒.','Те, що позначено, бачать інші, коли натиснуть на вашу аватарку. Решта буде приховано 🔒.'],
+'Цитата':['Quote','Цитата'],'Был(а) в сети':['Last seen','Був(ла) в мережі'],'🔒 скрыто':['🔒 hidden','🔒 приховано'],'(скрыто от других)':['(hidden from others)','(приховано від інших)'],'не указано':['not set','не вказано'],'нет подарков':['no gifts','немає подарунків'],'неизвестно':['unknown','невідомо'],'Закрыть':['Close','Закрити'],
+'Данные профиля ещё не получены (друг должен быть в сети)':['Profile data not received yet (the friend must be online)','Дані профілю ще не отримано (друг має бути в мережі)']};
 const TKS=Object.keys(TR).sort((a,b)=>b.length-a.length),CY=/[\u0400-\u04FF]/;
 function trl(s){if(LANG=='ru'||!CY.test(s))return s;const i=LANG=='en'?0:1;for(const k of TKS)if(s.includes(k))s=s.split(k).join(TR[k][i]);return s}
 function trNode(n){if(n.nodeType==3){const p=n.parentElement;if(!p||p.closest('.nt,script,style'))return;const v=trl(n.nodeValue);if(v!==n.nodeValue)n.nodeValue=v}
@@ -346,17 +364,17 @@ const langBtns=()=>[['ru','Русский'],['en','English'],['uk','Україн
 function setLang(l){LANG=l;store.set('pc_lang',l);document.documentElement.lang=l;render()}
 function extraSet(){const s=S.set;return `<div class="card"><h3>Язык</h3><div class="row">${langBtns()}</div></div>
 <div class="card"><h3>Шрифт</h3><div class="row"><button class="${s.font!='normal'?'on':''}" onclick="S.set.font='pixel';save();render()">Пиксельный</button><button class="${s.font=='normal'?'on':''}" onclick="S.set.font='normal';save();render()">Обычный</button></div></div>
-<div class="card"><h3>Свечение при разговоре</h3><div class="row"><label><input type="checkbox" ${s.glow!==false?'checked':''} onchange="S.set.glow=this.checked;save()"> Включить</label><label>Скорость <input type="range" min="1" max="10" value="${s.gsp||5}" oninput="S.set.gsp=+this.value;applyTheme()" onchange="save()"></label></div><small>Радужная подсветка вокруг того, кто сейчас говорит.</small></div>
-<div class="card"><h3>Фон при выключенной камере</h3>${S.cbg?`<img src="${S.cbg}" style="max-width:200px;border-radius:10px;display:block;margin-bottom:8px" alt="">`:''}<label>Картинка <input type="file" accept="image/*" onchange="img(this,'cbg')"></label> <button onclick="S.cbg='';save();cbgSend();render()">Убрать</button><br><small>Его видят все в конференции, когда у вас выключена камера. Поставить фон можно только себе.</small></div>`}
+<div class="card"><h3>Свечение при разговоре</h3><div class="row"><label><input type="checkbox" ${s.glow!==false?'checked':''} onchange="S.set.glow=this.checked;save()"> Включить</label><label>Скорость <input type="range" min="1" max="10" value="${s.gsp||5}" oninput="S.set.gsp=+this.value;applyTheme()" onchange="save()"></label></div><div class="row" style="margin-top:8px"><button class="${!s.gcol?'on':''}" onclick="S.set.gcol='';save();applyTheme();render()">🌈 Радужный</button><label>Свой цвет <input type="color" value="${s.gcol||'#33ddff'}" oninput="S.set.gcol=this.value;applyTheme()" onchange="save();render()"></label></div><small>Радужная подсветка вокруг того, кто сейчас говорит.</small></div>
+<div class="card"><h3>Фон при выключенной камере</h3>${S.cbg?`<img src="${S.cbg}" style="max-width:200px;border-radius:10px;display:block;margin-bottom:8px" alt="">`:''}<label>Картинка <input type="file" accept="image/*" onchange="img(this,'cbg')"></label> <button onclick="S.cbg='';save();cbgSend();render()">Убрать</button><br><small>Его видят все в конференции, когда у вас выключена камера. Поставить фон можно только себе.</small></div>${rtSet()}${prvSet()}`}
 function copyTxt(t){const fb=()=>{const a=document.createElement('textarea');a.value=t;a.style.cssText='position:fixed;opacity:0';document.body.appendChild(a);a.select();try{document.execCommand('copy')}catch(e){}a.remove()};try{return navigator.clipboard.writeText(t).catch(fb)}catch(e){fb();return Promise.resolve()}}
 function copyId(){copyTxt(S.id).then(()=>toast('PixelID скопирован'))}
 
 /* --- всплывающие квадратики сверху (сообщение / друг / звонок / обмен) --- */
 const NF={};let nfn=0;
 function notify(txt,acc,rej,o){o=o||{};if(o.tag)nfx(o.tag);const ks=Object.keys(NF);if(ks.length>=4)nfd(ks[0]);const k='n'+(++nfn),el=document.createElement('div');el.className='nfc';
-el.innerHTML='<div class="nft'+(o.nt?' nt':'')+'"></div><div class="nfb"><button onclick="nfa(\''+k+'\',1)">✔ Принять</button><button onclick="nfa(\''+k+'\',0)">✖ Отклонить</button></div>';el.firstChild.textContent=txt;$('#nf').appendChild(el);
-NF[k]={el,acc,rej,tag:o.tag,tm:setTimeout(()=>nfd(k),o.ms||20000)}}
-function nfd(k){const n=NF[k];if(!n)return null;clearTimeout(n.tm);n.el.remove();delete NF[k];return n}
+el.innerHTML='<div class="nft'+(o.nt?' nt':'')+'"></div><div class="nfb"><button class="ok" onclick="nfa(\''+k+'\',1)">✔ Принять</button><button class="no" onclick="nfa(\''+k+'\',0)">✖ Отклонить</button></div>';el.firstChild.textContent=txt;$('#nf').appendChild(el);
+NF[k]={el,acc,rej,tag:o.tag,ring:o.ring,tm:setTimeout(()=>nfd(k),o.ms||20000)};if(o.ring)playRT(null,true)}
+function nfd(k){const n=NF[k];if(!n)return null;clearTimeout(n.tm);n.el.remove();delete NF[k];if(n.ring&&!Object.values(NF).some(x=>x.ring))stopRing();return n}
 function nfa(k,ok){const n=nfd(k);if(!n)return;const f=ok?n.acc:n.rej;try{f&&f()}catch(e){}}
 function nfx(tag){Object.keys(NF).forEach(k=>{if(NF[k].tag===tag)nfd(k)})}
 let AC=null;
@@ -399,6 +417,64 @@ if(a){a.n.getByteTimeDomainData(a.b);let m=0;for(let i=0;i<a.b.length;i++)m=Math
 const e=document.getElementById('t-'+id);if(e)e.classList.toggle('sp',!!sp)};
 chk('me',room.stream,mic);Object.entries(room.parts).forEach(([k,p])=>chk(k,p.stream,p.mic!==false))}
 setInterval(vad,100);
+
+/* ===== РИНГТОНЫ ===== */
+const RTS={
+mario:{n:'🍄 Марио (чиптюн, в духе игры)',w:'square',bpm:176,v:.05,dc:.85,s:'E5:.25 G5:.25 E5:.25 C5:.25 D5:.25 G5:.5 R:.25 G4:.25 C5:.25 E5:.25 G5:.25 A5:.5 F5:.25 G5:.25 R:.25 E5:.5 C5:.25 D5:.25 B4:.5 R:.5'},
+mc1:{n:'⛏ Майнкрафт: тихий день (пианино)',w:'sine',bpm:84,v:.1,dc:2.2,s:'C4:.5 E4:.5 G4:.5 B4:1 A4:.5 E4:.5 D4:.5 G4:1.5 R:.5 F4:.5 A4:.5 C5:1 B4:.5 G4:.5 E4:1.5 R:1'},
+mc2:{n:'⛏ Майнкрафт: пещера (эмбиент)',w:'triangle',bpm:66,v:.1,dc:3,s:'A3:1 E4:1 D4:.5 C4:.5 B3:1.5 R:.5 G3:1 D4:1 F4:.5 E4:.5 A3:2 R:1'}};
+const NOTEIX={C:0,D:2,E:4,F:5,G:7,A:9,B:11};
+function noteHz(n){const m=/^([A-G])(#|b)?(\d)$/.exec(n);if(!m)return 440;const x=NOTEIX[m[1]]+(m[2]=='#'?1:m[2]=='b'?-1:0)+12*(+m[3]-4)-9;return 440*Math.pow(2,x/12)}
+let RING=null;
+function rtCustom(){try{return localStorage.getItem('pc_rt_'+U)||''}catch(e){return ''}}
+function ringKey(){const k=(S&&S.set&&S.set.rt)||'mario';return k=='custom'?(rtCustom()?'custom':'mario'):(RTS[k]?k:'mario')}
+function stopRing(){if(!RING)return;clearTimeout(RING.tm);(RING.nodes||[]).forEach(n=>{try{if(n.stop)n.stop();n.disconnect()}catch(e){}});if(RING.au){try{RING.au.pause()}catch(e){}}RING=null}
+function playRT(key,loop){stopRing();const k=key||ringKey();
+if(k=='custom'){const u=rtCustom();if(u){const a=new Audio(u);a.loop=!!loop;a.volume=.9;a.play().catch(()=>{});RING={au:a};return}}
+const t=RTS[k]||RTS.mario;try{AC=AC||new(window.AudioContext||window.webkitAudioContext)();if(AC.state=='suspended')AC.resume().catch(()=>{})}catch(e){return}
+const nodes=[],b=60/t.bpm,t0=AC.currentTime+.05;let at=t0;
+t.s.split(' ').forEach(x=>{const p=x.split(':'),du=(+p[1])*b;if(p[0]!='R'){const o=AC.createOscillator(),g=AC.createGain(),end=at+du*t.dc;o.type=t.w;o.frequency.value=noteHz(p[0]);g.gain.setValueAtTime(.0001,at);g.gain.exponentialRampToValueAtTime(t.v,at+.012);g.gain.exponentialRampToValueAtTime(.0001,end);o.connect(g);g.connect(AC.destination);o.start(at);o.stop(end+.05);nodes.push(o,g)}at+=du});
+const r={nodes};RING=r;if(loop)r.tm=setTimeout(()=>{if(RING===r)playRT(k,true)},(at-t0+.9)*1000)}
+function setRT(k){S.set.rt=k;save();render();playRT(k,false)}
+function rtFile(inp){const f=inp.files[0];if(!f)return;if(!/^audio\//.test(f.type)){alert('Выберите аудиофайл');return}if(f.size>1.5*1024*1024){alert('Файл слишком большой (макс. 1,5 МБ)');return}
+const r=new FileReader();r.onload=()=>{try{localStorage.setItem('pc_rt_'+U,r.result)}catch(e){alert('Не удалось сохранить файл');return}S.set.rt='custom';S.set.rtn=f.name.slice(0,30);save();render();playRT('custom',false)};r.readAsDataURL(f)}
+function rtSet(){const cur=ringKey(),has=!!rtCustom();
+return `<div class="card"><h3>Рингтон</h3><div class="row">${Object.entries(RTS).map(([k,t])=>`<button class="${cur==k?'on':''}" onclick="setRT('${k}')">${t.n}</button>`).join('')}${has?`<button class="${cur=='custom'?'on':''}" onclick="setRT('custom')">🎵 <span class="nt">${esc(S.set.rtn||'Свой файл')}</span></button>`:''}</div><div class="row" style="margin-top:8px"><button onclick="playRT(null,false)">▶ Прослушать</button><button onclick="stopRing()">■ Стоп</button><label class="fb">📁 Свой рингтон (mp3, wav, ogg)<input type="file" accept="audio/*" hidden onchange="rtFile(this)"></label></div><small>Мелодия играет, пока вам звонят. Свой файл — до 1,5 МБ.</small></div>`}
+
+/* ===== ПРОФИЛЬ ПО КЛИКУ НА АВАТАРКУ ===== */
+const pvOn=k=>!S.set.priv||S.set.priv[k]!==false;
+function ageOf(bd){if(!/^\d{4}-\d{2}-\d{2}$/.test(bd||''))return '';const [y,m,d]=bd.split('-').map(Number),t=new Date();let a=t.getFullYear()-y;if(t.getMonth()+1<m||(t.getMonth()+1==m&&t.getDate()<d))a--;return a>=0&&a<121?a:''}
+function pinfo(all){const pv=k=>all||pvOn(k),c={};S.inv.forEach(x=>{c[x.g]=(c[x.g]||0)+1});
+return {q:pv('q')?String(S.bio||'').slice(0,200):null,g:pv('g')?c:null,bd:pv('bd')?String(S.bd||'').slice(5):null,age:pv('age')?ageOf(S.bd):null,ls:pv('ls')}}
+function sinfo(i){if(!i||typeof i!='object')return null;
+const g=i.g&&typeof i.g=='object'?Object.fromEntries(Object.entries(i.g).filter(([k,v])=>GK.includes(k)&&Number.isInteger(v)&&v>0&&v<100)):null;
+return {q:typeof i.q=='string'?i.q.slice(0,200):null,g,bd:typeof i.bd=='string'&&/^(\d{2}-\d{2})?$/.test(i.bd)?i.bd:null,age:i.age===''?'':(Number.isInteger(i.age)&&i.age>=0&&i.age<121?i.age:null),ls:i.ls!==false}}
+function pushInfo(){Object.keys(conns).forEach(id=>{const c=conns[id];if(c&&c.open){try{c.send(Object.assign({t:'hi'},prof()))}catch(e){}}});if(room)bc()}
+function prvSet(){const r=[['q','Цитату'],['g','Подарки'],['bd','День рождения'],['age','Возраст'],['ls','Когда был(а) в сети']];
+return `<div class="card"><h3>Приватность профиля</h3><small>Показывать другим:</small><div class="row" style="margin-top:6px">${r.map(([k,n])=>`<label><input type="checkbox" ${pvOn(k)?'checked':''} onchange="setPv('${k}',this.checked)"> ${n}</label>`).join('')}</div><small>Что отмечено — то видят другие, когда нажмут на вашу аватарку. Остальное будет скрыто 🔒.</small></div>`}
+function setPv(k,v){S.set.priv=S.set.priv||{};S.set.priv[k]=v;save();pushInfo()}
+const locL=()=>LANG=='en'?'en-GB':LANG=='uk'?'uk-UA':'ru-RU';
+function agePh(n){if(LANG=='en')return n+' years old';const a=n%10,b=n%100,one=a==1&&b!=11,few=a>=2&&a<=4&&(b<12||b>14);return n+' '+(LANG=='uk'?(one?'рік':few?'роки':'років'):(one?'год':few?'года':'лет'))}
+function bdFmt(v){const [m,d]=v.split('-').map(Number);return new Date(2000,m-1,d).toLocaleDateString(locL(),{day:'numeric',month:'long'})}
+function dtFmt(t){return new Date(t).toLocaleString(locL(),{day:'numeric',month:'short',hour:'2-digit',minute:'2-digit'})}
+function chHead(){const f=S.friends.find(x=>x.id==cf);return f?`<div class="av ${isOn(f.id)?'on':''}" data-pf="f:${f.id}" style="width:48px;height:48px;font-size:20px">${avh2(f.av,f.im)}</div><div><b>${esc(fname(f))}</b><br><small>${isOn(f.id)?'в сети':'не в сети'}</small></div>`:''}
+function showProfile(k){k=String(k);const i=k.indexOf(':'),kd=i<0?k:k.slice(0,i),id=i<0?'':k.slice(i+1);let o=null,info=null,on=false,seen=0,me=false;
+if(kd=='me'){me=true;o={nick:U,av:S.av,im:S.avimg};info=pinfo(true);on=true}
+else if(kd=='f'){o=S.friends.find(f=>f.id==id);if(o){info=o.info;on=isOn(id);seen=o.seen}}
+else if(kd=='r'){o=S.reqIn.find(f=>f.id==id);if(o)info=o.info}
+else if(kd=='p'&&room){o=room.parts[id];if(o){info=o.info;on=true}}
+if(!o)return;
+const lock='<span style="opacity:.7">🔒 скрыто</span>',R=(l,v,key)=>`<div style="margin:8px 0"><small>${l}</small><br>${v}${me&&!pvOn(key)?' <small>(скрыто от других)</small>':''}</div>`;let body;
+if(!info)body='<small>Данные профиля ещё не получены (друг должен быть в сети)</small>';
+else body=R('Цитата',info.q===null?lock:info.q?`<span class="nt">${esc(info.q)}</span>`:'не указано','q')
++R('Подарки',info.g===null?lock:Object.keys(info.g).length?`<div class="row">${Object.entries(info.g).map(([g,c])=>`<span class="pfg">${svg(g,'')}<br><small>${G[g].n}${c>1?' ×'+c:''}</small></span>`).join('')}</div>`:'нет подарков','g')
++R('Возраст',info.age===null?lock:info.age===''?'не указано':agePh(info.age),'age')
++R('День рождения',info.bd===null?lock:info.bd?bdFmt(info.bd):'не указано','bd')
++R('Был(а) в сети',info.ls===false?lock:on?'🟢 в сети':seen?dtFmt(seen):'неизвестно','ls');
+const nm=me?U:(kd=='f'?fname(o):(o.nick||'Гость'));
+$('#md').innerHTML=`<div class="mdb" onclick="if(event.target==this)$('#md').innerHTML=''"><div class="card"><div class="row" style="margin-bottom:6px"><div class="av ${on?'on':''}" style="width:72px;height:72px;font-size:30px">${avh2(o.av,o.im)}</div><h3 style="margin:0">${esc(nm)}</h3></div>${body}<button onclick="$('#md').innerHTML=''">Закрыть</button></div></div>`}
+addEventListener('click',e=>{const t=e.target.closest&&e.target.closest('[data-pf]');if(t){e.stopPropagation();showProfile(t.dataset.pf)}});
+
 render();
 </script></body></html>
 """
